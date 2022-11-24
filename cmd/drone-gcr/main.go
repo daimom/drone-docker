@@ -10,7 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 
-	docker "github.com/drone-plugins/drone-docker"
+	docker "drone-docker"
 )
 
 // gcr default username

@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
-	docker "github.com/drone-plugins/drone-docker"
+	docker "drone-docker"
 )
 
 var (
@@ -351,6 +351,7 @@ func run(c *cli.Context) error {
 			}
 			plugin.Build.Tags = tag
 		} else {
+			logrus.Printf("repo.branch: %s", c.String("repo.branch"))
 			logrus.Printf("skipping automated docker build for %s", c.String("commit.ref"))
 			return nil
 		}
