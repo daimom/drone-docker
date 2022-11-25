@@ -64,6 +64,7 @@ type (
 		AddHost     []string // Docker build add-host
 		Quiet       bool     // Docker build quiet
 		Platform    string   // Docker build platform
+		StepName    string   // Drone Step Name
 	}
 
 	// Plugin defines the Docker plugin parameters.
@@ -182,7 +183,7 @@ func (p Plugin) Exec() error {
 	cmds = append(cmds, commandBuild(p.Build)) // docker build
 
 	for _, tag := range p.Build.Tags {
-		cmds = append(cmds, commandTag(p.Build, tag)) // docker tag
+		// cmds = append(cmds, commandTag(p.Build, tag)) // docker tag
 
 		if !p.Dryrun {
 			cmds = append(cmds, commandPush(p.Build, tag)) // docker push
@@ -274,11 +275,14 @@ func commandInfo() *exec.Cmd {
 
 // helper function to create the docker build command.
 func commandBuild(build Build) *exec.Cmd {
+	tag := build.Repo + ":" + build.Tags[0]
+
 	args := []string{
 		"build",
 		"--rm=true",
 		"-f", build.Dockerfile,
 		"-t", build.Name,
+		"-t", tag,
 	}
 
 	args = append(args, build.Context)

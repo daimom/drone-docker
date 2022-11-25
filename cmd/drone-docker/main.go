@@ -274,6 +274,11 @@ func main() {
 			Usage:  "platform value to pass to docker",
 			EnvVar: "PLUGIN_PLATFORM",
 		},
+		cli.StringFlag{
+			Name:   "drone-step-name",
+			Usage:  "drone step name",
+			EnvVar: "DRONE_STEP_NAME",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -318,6 +323,7 @@ func run(c *cli.Context) error {
 			AddHost:     c.StringSlice("add-host"),
 			Quiet:       c.Bool("quiet"),
 			Platform:    c.String("platform"),
+			StepName:    c.String("drone-step-name"),
 		},
 		Daemon: docker.Daemon{
 			Registry:      c.String("docker.registry"),
@@ -351,11 +357,15 @@ func run(c *cli.Context) error {
 			}
 			plugin.Build.Tags = tag
 		} else {
-			logrus.Printf("repo.branch: %s", c.String("repo.branch"))
 			logrus.Printf("skipping automated docker build for %s", c.String("commit.ref"))
 			return nil
 		}
 	}
+	logrus.Printf("step-name: %s", c.String("drone-step-name"))
+	logrus.Printf("auto_tags: %s", c.String("tags.auto"))
+	logrus.Printf("tags: %s", c.String("tags"))
+	logrus.Printf("repo.branch: %s", c.String("repo.branch"))
+	logrus.Printf("skipping automated docker build for %s", c.String("commit.ref"))
 
 	return plugin.Exec()
 }
